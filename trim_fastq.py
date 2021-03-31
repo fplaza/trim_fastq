@@ -25,7 +25,7 @@ def get_opts():
             help='Reject the reads whose length is lower than this value')  
 
     parser.add_argument('--max-length',
-            dest='max_length', type=int, default=sys.maxint,
+            dest='max_length', type=int, default=sys.maxsize,
             help='Trim the reads whose length exceed this value')  
 
     return parser.parse_args()
@@ -34,10 +34,10 @@ def get_opts():
 FastqEntry=namedtuple('FastqEntry', ['seq_id', 'seq_len', 'seq', 'qual'])
 def fastq_reader(istream):
     while istream:
-        seq_id = istream.next().rstrip('\n')
-        seq = istream.next().rstrip('\n')
-        istream.next()
-        qual = istream.next().rstrip('\n')
+        seq_id = istream.readline().rstrip('\n')
+        seq = istream.readline().rstrip('\n')
+        istream.readline()
+        qual = istream.readline().rstrip('\n')
         yield FastqEntry(seq_id, len(seq), seq, qual)
 
 def fastq_format(fastq_entry, max_length):
