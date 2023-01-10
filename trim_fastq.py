@@ -34,10 +34,13 @@ def get_opts():
 FastqEntry=namedtuple('FastqEntry', ['seq_id', 'seq_len', 'seq', 'qual'])
 def fastq_reader(istream):
     while istream:
-        seq_id = istream.readline().rstrip('\n')
-        seq = istream.readline().rstrip('\n')
-        istream.readline()
-        qual = istream.readline().rstrip('\n')
+        try:
+            seq_id = next(istream).rstrip('\n')
+        except StopIteration:
+            return
+        seq = next(istream).rstrip('\n')
+        next(istream)
+        qual = next(istream).rstrip('\n')
         yield FastqEntry(seq_id, len(seq), seq, qual)
 
 def fastq_format(fastq_entry, max_length):
